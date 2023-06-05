@@ -8,16 +8,13 @@ function Login() {
   const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const minCharacter = 6;
   const isDisabled = !regexEmail.test(userEmail) || password.length <= minCharacter;
-  // function handleDisabled() {
-  //   return !regexEmail.test(userEmail);
-  // }
+  const history = useHistory();
 
   function handleSubmitButton(event) {
     event.preventDefault();
-    const history = useHistory();
     const user = { email: userEmail };
     localStorage.setItem('user', JSON.stringify(user));
-    history.push('/recipes');
+    history.push('/meals');
   }
 
   return (
