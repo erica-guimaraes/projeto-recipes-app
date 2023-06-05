@@ -16,7 +16,7 @@ function App() {
         />
         <Route
           exact
-          path="/recipes"
+          path="/meals"
           render={ (props) => <Recipes { ...props } /> }
         />
       </Switch>

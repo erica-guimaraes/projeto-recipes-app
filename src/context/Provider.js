@@ -5,7 +5,6 @@ import Context from './Context';
 function Provider({ children }) {
   // const [email, setEmail] = useState('');
   // const [password, setPassword] = useState('');
-
   return (
     <Context.Provider>
       {children}
