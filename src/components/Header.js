@@ -6,9 +6,8 @@ function Header() {
   return (
     <div>
       <h1 data-testid="page-title">Título</h1>
-      <img src={ profileIcon } alt="profile-icon" />
-      <img src={ searchIcon } alt="search-icon" />
-
+      <img data-testid="profile-top-btn" src={ profileIcon } alt="profile-icon" />
+      <img data-testid="search-top-btn" src={ searchIcon } alt="search-icon" />
     </div>
   );
 }
