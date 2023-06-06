@@ -16,12 +16,15 @@ function SearchBar(props) {
     let data;
     let data1;
     let data2;
-    console.log(searchInputText);
+    const sorryString = 'Sorry, we haven\'t found any recipes for these filters.';
     switch (radioSelected) {
     case 'Ingredient':
       responseIngredient = await fetch(`${endpoint}filter.php?i=${searchInputText}`);
       data = await responseIngredient.json();
       setRecipes(data[screen.toLowerCase()]);
+      if (data[screen.toLowerCase()] === null) {
+        global.alert(sorryString);
+      }
       console.log(data);
       break;
     case 'Name':
@@ -36,7 +39,9 @@ function SearchBar(props) {
         console.log(error);
       }
       setRecipes(data1[screen.toLowerCase()]);
-      console.log(data1);
+      if (data1[screen.toLowerCase()] === null) {
+        global.alert(sorryString);
+      }
       break;
     case 'First Letter':
       if (searchInputText.length > 1) {
@@ -45,7 +50,9 @@ function SearchBar(props) {
         responseFLetter = await fetch(`${endpoint}search.php?f=${searchInputText}`);
         data2 = await responseFLetter.json();
         setRecipes(data2[screen.toLowerCase()]);
-        console.log(data2);
+        if (data2[screen.toLowerCase()] === null) {
+          global.alert(sorryString);
+        }
       }
       break;
     default:
@@ -92,7 +99,10 @@ function SearchBar(props) {
       >
         Buscar
       </button>
-      {recipes.length > 0 && recipes.map((recipe, index) => index < magic12 && (
+      {recipes
+      && recipes.length > 0
+      && recipes.map((recipe, index) => index < magic12
+      && (
         <div key={ index } data-testid={ `${index}-recipe-card` }>
           <p data-testid={ `${index}-card-name` }>{recipe[recipesString]}</p>
           <img
