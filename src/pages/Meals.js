@@ -7,7 +7,7 @@ function Meals() {
   return (
     <div>
       <Header title="Meals" />
-      <SearchBar />
+      <SearchBar endpoint="https://www.themealdb.com/api/json/v1/1/" screen="Meals" />
       <Footer />
     </div>
   );

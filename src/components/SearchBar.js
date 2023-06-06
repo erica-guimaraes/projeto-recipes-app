@@ -1,9 +1,14 @@
 import React, { useState, useContext } from 'react';
+import PropTypes from 'prop-types';
+import { useHistory } from 'react-router-dom';
 import Context from '../context/Context';
 
-function SearchBar() {
+function SearchBar(props) {
+  const { endpoint, screen } = props;
   const { searchInputText } = useContext(Context);
   const [radioSelected, setRadioSelected] = useState('');
+  const [recipes, setRecipes] = useState([]);
+  const history = useHistory();
   const fetchApi = async () => {
     let responseIngredient;
     let responseName;
@@ -14,21 +19,32 @@ function SearchBar() {
     console.log(searchInputText);
     switch (radioSelected) {
     case 'Ingredient':
-      responseIngredient = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${searchInputText}`);
+      responseIngredient = await fetch(`${endpoint}filter.php?i=${searchInputText}`);
       data = await responseIngredient.json();
+      setRecipes(data[screen.toLowerCase()]);
       console.log(data);
       break;
     case 'Name':
-      responseName = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${searchInputText}`);
+      responseName = await fetch(`${endpoint}search.php?s=${searchInputText}`);
       data1 = await responseName.json();
+      try {
+        if (data1[screen.toLowerCase()].length === 1) {
+          const id = `id${screen.replace('s', '')}`;
+          history.push(`/${screen.toLowerCase()}/${data1[screen.toLowerCase()][0][id]}`);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+      setRecipes(data1[screen.toLowerCase()]);
       console.log(data1);
       break;
     case 'First Letter':
       if (searchInputText.length > 1) {
         global.alert('Your search must have only 1 (one) character');
       } else {
-        responseFLetter = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?f=${searchInputText}`);
+        responseFLetter = await fetch(`${endpoint}search.php?f=${searchInputText}`);
         data2 = await responseFLetter.json();
+        setRecipes(data2[screen.toLowerCase()]);
         console.log(data2);
       }
       break;
@@ -36,6 +52,9 @@ function SearchBar() {
       break;
     }
   };
+
+  const recipesString = `str${screen.replace('s', '')}`;
+  const magic12 = 12;
 
   return (
     <div>
@@ -73,8 +92,23 @@ function SearchBar() {
       >
         Buscar
       </button>
+      {recipes.length > 0 && recipes.map((recipe, index) => index < magic12 && (
+        <div key={ index } data-testid={ `${index}-recipe-card` }>
+          <p data-testid={ `${index}-card-name` }>{recipe[recipesString]}</p>
+          <img
+            src={ recipe[`str${screen.replace('s', '')}Thumb`] }
+            alt={ recipe[recipesString] }
+            data-testid={ `${index}-card-img` }
+          />
+        </div>
+      ))}
     </div>
   );
 }
+
+SearchBar.propTypes = {
+  endpoint: PropTypes.string.isRequired,
+  screen: PropTypes.string.isRequired,
+};
 
 export default SearchBar;
