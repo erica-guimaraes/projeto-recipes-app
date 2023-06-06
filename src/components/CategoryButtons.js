@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 function CategoryButtons({ categoryName }) {
   return (
@@ -7,5 +8,9 @@ function CategoryButtons({ categoryName }) {
     </div>
   );
 }
+
+CategoryButtons.propTypes = {
+  categoryName: PropTypes.string.isRequired,
+};
 
 export default CategoryButtons;
