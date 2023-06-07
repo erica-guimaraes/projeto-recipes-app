@@ -26,6 +26,7 @@ function Recipes() {
   return (
     <div>
       {location === '/meals' ? <Header title="Meals" /> : <Header title="Drinks" />}
+      <SearchBar />
       <ul>
         {recipes.slice(0, limitResults).map((recipe, index) => (
           <div key={ index } data-testid={ `${index}-recipe-card` }>
