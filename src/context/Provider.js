@@ -6,11 +6,14 @@ function Provider({ children }) {
   // const [email, setEmail] = useState('');
   // const [password, setPassword] = useState('');
   const [searchInputText, setSearchInputText] = React.useState('');
+  const [recipes, setRecipes] = React.useState([]);
 
   const context = useMemo(() => ({
     searchInputText,
     setSearchInputText,
-  }), [searchInputText, setSearchInputText]);
+    recipes,
+    setRecipes,
+  }), [searchInputText, setSearchInputText, recipes, setRecipes]);
 
   return (
     <Context.Provider value={ context }>
