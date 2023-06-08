@@ -1,13 +1,41 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Context from '../context/Context';
 
 function SearchBar() {
-  const { searchInputText, recipes, setRecipes } = useContext(Context);
+  const { searchInputText, setRecipes } = useContext(Context);
   const [radioSelected, setRadioSelected] = useState('');
 
-  useEffect(() => {
-    console.log(radioSelected);
-  }, [radioSelected]);
+  const fetchApi = async () => {
+    switch (radioSelected) {
+    case 'Ingredient':
+      {
+        const response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${searchInputText}`);
+        const data = await response.json();
+        setRecipes(data.meals);
+      }
+      break;
+    case 'Name':
+      {
+        const response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${searchInputText}`);
+        const data = await response.json();
+        setRecipes(data.meals);
+      }
+      break;
+    case 'First Letter':
+      {
+        if (searchInputText.length !== 1) {
+          alert('Your search must have only 1 (one) character');
+          return;
+        }
+        const response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?f=${searchInputText}`);
+        const data = await response.json();
+        setRecipes(data.meals);
+      }
+      break;
+    default:
+      break;
+    }
+  };
 
   return (
     <div>
@@ -41,7 +69,7 @@ function SearchBar() {
       <button
         type="button"
         data-testid="exec-search-btn"
-        onClick={ () => fetchApi() }
+        onClick={ fetchApi }
       >
         Buscar
       </button>

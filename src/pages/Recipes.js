@@ -6,7 +6,8 @@ import SearchBar from '../components/SearchBar';
 import Context from '../context/Context';
 
 function Recipes() {
-  const { recipes, setRecipes } = useContext(Context);
+  const { searchInputText,
+    recipes, setRecipes, setSearchInputText } = useContext(Context);
   const location = useLocation().pathname;
   console.log(location);
 
@@ -26,7 +27,10 @@ function Recipes() {
   return (
     <div>
       {location === '/meals' ? <Header title="Meals" /> : <Header title="Drinks" />}
-      <SearchBar />
+      <SearchBar
+        searchInputText={ searchInputText }
+        setSearchInputText={ setSearchInputText }
+      />
       <ul>
         {recipes.slice(0, limitResults).map((recipe, index) => (
           <div key={ index } data-testid={ `${index}-recipe-card` }>
