@@ -6,23 +6,20 @@ import SearchBar from '../components/SearchBar';
 import Context from '../context/Context';
 
 function Recipes() {
-  const { searchInputText,
-    listedRecipes, setListedRecipes, setSearchInputText } = useContext(Context);
+  const {
+    searchInputText,
+    listedRecipes,
+    setListedRecipes,
+    setSearchInputText,
+    loading,
+    radioSelected,
+  } = useContext(Context);
   const location = useLocation().pathname;
-  console.log(location);
+  const limitResults = 12;
 
   useEffect(() => {
-    let URL = '';
-    URL = location === '/meals' ? 'https://www.themealdb.com/api/json/v1/1/search.php?s=' : 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=';
-    fetch(URL)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        setListedRecipes(location === '/meals' ? data.meals : data.drinks);
-      });
-  }, [location, setListedRecipes]);
 
-  const limitResults = 12;
+  }, [searchInputText, radioSelected]);
 
   return (
     <div>
@@ -30,23 +27,28 @@ function Recipes() {
       <SearchBar
         searchInputText={ searchInputText }
         setSearchInputText={ setSearchInputText }
+        setListedRecipes={ setListedRecipes }
       />
-      <ul>
-        {listedRecipes.slice(0, limitResults).map((recipe, index) => (
-          <div key={ index } data-testid={ `${index}-recipe-card` }>
-            <li key={ recipe.idMeal || recipe.idDrink }>
-              <p data-testid={ `${index}-card-name` }>
-                {location === '/meals' ? recipe.strMeal : recipe.strDrink}
-              </p>
-            </li>
-            <img
-              src={ location === '/meals' ? recipe.strMealThumb : recipe.strDrinkThumb }
-              alt={ location === '/meals' ? recipe.strMeal : recipe.strDrink }
-              data-testid={ `${index}-card-img` }
-            />
-          </div>
-        ))}
-      </ul>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <ul>
+          {listedRecipes.slice(0, limitResults).map((recipe, index) => (
+            <div key={ index } data-testid={ `${index}-recipe-card` }>
+              <li key={ recipe.idMeal || recipe.idDrink }>
+                <p data-testid={ `${index}-card-name` }>
+                  {location === '/meals' ? recipe.strMeal : recipe.strDrink}
+                </p>
+              </li>
+              <img
+                src={ location === '/meals' ? recipe.strMealThumb : recipe.strDrinkThumb }
+                alt={ location === '/meals' ? recipe.strMeal : recipe.strDrink }
+                data-testid={ `${index}-card-img` }
+              />
+            </div>
+          ))}
+        </ul>
+      )}
       <Footer />
     </div>
   );
