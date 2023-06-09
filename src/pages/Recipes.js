@@ -7,7 +7,7 @@ import Context from '../context/Context';
 
 function Recipes() {
   const { searchInputText,
-    recipes, setRecipes, setSearchInputText } = useContext(Context);
+    listedRecipes, setListedRecipes, setSearchInputText } = useContext(Context);
   const location = useLocation().pathname;
   console.log(location);
 
@@ -18,9 +18,9 @@ function Recipes() {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        setRecipes(location === '/meals' ? data.meals : data.drinks);
+        setListedRecipes(location === '/meals' ? data.meals : data.drinks);
       });
-  }, [location, setRecipes]);
+  }, [location, setListedRecipes]);
 
   const limitResults = 12;
 
@@ -32,7 +32,7 @@ function Recipes() {
         setSearchInputText={ setSearchInputText }
       />
       <ul>
-        {recipes.slice(0, limitResults).map((recipe, index) => (
+        {listedRecipes.slice(0, limitResults).map((recipe, index) => (
           <div key={ index } data-testid={ `${index}-recipe-card` }>
             <li key={ recipe.idMeal || recipe.idDrink }>
               <p data-testid={ `${index}-card-name` }>

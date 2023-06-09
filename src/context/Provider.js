@@ -6,14 +6,14 @@ function Provider({ children }) {
   // const [email, setEmail] = useState('');
   // const [password, setPassword] = useState('');
   const [searchInputText, setSearchInputText] = React.useState('');
-  const [recipes, setRecipes] = React.useState([]);
+  const [listedRecipes, setListedRecipes] = React.useState([]);
 
   const context = useMemo(() => ({
     searchInputText,
     setSearchInputText,
-    recipes,
-    setRecipes,
-  }), [searchInputText, setSearchInputText, recipes, setRecipes]);
+    listedRecipes,
+    setListedRecipes,
+  }), [searchInputText, setSearchInputText, listedRecipes, setListedRecipes]);
 
   return (
     <Context.Provider value={ context }>
@@ -27,3 +27,8 @@ Provider.propTypes = {
 };
 
 export default Provider;
+
+// Atualizar o nome do estado global "recipes" para listedRecipes e deixa-lo funcional
+// No final de cada case do switch do SearchBar, enviar a informação do estado local recipes para o estado global listedRecipes
+//
+//
