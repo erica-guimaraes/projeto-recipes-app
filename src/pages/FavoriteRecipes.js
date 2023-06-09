@@ -1,6 +1,8 @@
 import React from 'react';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
+import blackHeartIcon from '../images/blackHeartIcon.svg';
+import shareIcon from '../images/shareIcon.svg';
 
 function FavoriteRecipes() {
   const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes')) || [];
@@ -19,10 +21,21 @@ function FavoriteRecipes() {
             src={ recipe.image }
             alt="recipe"
           />
-          <p data-testid={ `${index}-horizontal-top-text` }>{recipe.category}</p>
+          <p data-testid={ `${index}-horizontal-top-text` }>
+            {recipe.type === 'meal'
+              ? `${recipe.nationality} - ${recipe.category}` : recipe.alcoholicOrNot}
+          </p>
           <p data-testid={ `${index}-horizontal-name` }>{recipe.name}</p>
-          <button data-testid={ `${index}-horizontal-share-btn` }>compartilhar</button>
-          <button data-testid={ `${index}-horizontal-favorite-btn` }>compartilhar</button>
+          <img
+            data-testid={ `${index}-horizontal-share-btn` }
+            src={ shareIcon }
+            alt="share"
+          />
+          <img
+            data-testid={ `${index}-horizontal-favorite-btn` }
+            src={ blackHeartIcon }
+            alt="favorite"
+          />
         </div>
       ))}
 
