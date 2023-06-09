@@ -1,17 +1,16 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
-import Context from '../context/Context';
 
 function Profile() {
-  const { userEmailProvider } = useContext(Context);
   const history = useHistory();
+  const { email } = JSON.parse(localStorage.getItem('user'));
 
   return (
     <div>
       <Header title="Profile" />
-      <h1 data-testid="profile-email">{userEmailProvider}</h1>
+      <h1 data-testid="profile-email">{email}</h1>
       <button
         type="button"
         data-testid="profile-done-btn"
@@ -30,6 +29,7 @@ function Profile() {
         type="button"
         data-testid="profile-logout-btn"
         onClick={ () => {
+          localStorage.clear();
           history.push('/');
         } }
       >
