@@ -3,7 +3,9 @@ import Footer from '../components/Footer';
 
 function Recipes() {
   return (
-    <div><Footer /></div>
+    <div>
+      <Footer />
+    </div>
   );
 }
 
