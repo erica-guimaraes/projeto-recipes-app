@@ -10,6 +10,9 @@ function Provider({ children }) {
   const [screen, setScreen] = useState('');
   const [endpoint, setEndpoint] = useState('');
 
+  // Tela Profile:
+  const [userEmailProvider, setUserEmailProvider] = useState('');
+
   const context = useMemo(() => ({
     searchInputText,
     setSearchInputText,
@@ -19,11 +22,13 @@ function Provider({ children }) {
     setScreen,
     endpoint,
     setEndpoint,
+    userEmailProvider,
+    setUserEmailProvider,
   }), [searchInputText,
     setSearchInputText,
     recipes,
     setRecipes,
-    screen, setScreen, endpoint, setEndpoint]);
+    screen, setScreen, endpoint, setEndpoint, userEmailProvider, setUserEmailProvider]);
 
   return (
     <Context.Provider value={ context }>

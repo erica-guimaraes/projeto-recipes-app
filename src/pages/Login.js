@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
+import Context from '../context/Context';
 
 function Login() {
+  const { setUserEmailProvider } = useContext(Context);
+
   const [userEmail, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -45,6 +48,7 @@ function Login() {
           type="submit"
           data-testid="login-submit-btn"
           disabled={ isDisabled }
+          onClick={ () => setUserEmailProvider(userEmail) }
         >
           submit
         </button>
