@@ -9,6 +9,7 @@ import Meals from './pages/Meals';
 import Drinks from './pages/Drinks';
 import DoneRecipes from './pages/DoneRecipes';
 import FavoriteRecipes from './pages/FavoriteRecipes';
+import Recipes from './pages/Recipes';
 
 function App() {
   return (
@@ -33,6 +34,11 @@ function App() {
           exact
           path="/profile"
           render={ (props) => <Profile { ...props } /> }
+        />
+        <Route
+          exact
+          path="/recipes"
+          render={ (props) => <Recipes { ...props } /> }
         />
         <Route
           exact

@@ -5,9 +5,14 @@ import Context from '../context/Context';
 
 function SearchBar(props) {
   const { endpoint, screen } = props;
-  const { searchInputText } = useContext(Context);
+  const { searchInputText,
+    recipes,
+    setRecipes, setScreen, setEndpoint } = useContext(Context);
   const [radioSelected, setRadioSelected] = useState('');
-  const [recipes, setRecipes] = useState([]);
+  // const [recipes, setRecipes] = useState([]);
+  setScreen(screen);
+  setEndpoint(endpoint);
+  console.log(recipes);
   const history = useHistory();
   const fetchApi = async () => {
     let responseIngredient;
@@ -26,6 +31,8 @@ function SearchBar(props) {
         global.alert(sorryString);
       }
       console.log(data);
+    history.push('/recipes');
+
       break;
     case 'Name':
       responseName = await fetch(`${endpoint}search.php?s=${searchInputText}`);
@@ -39,6 +46,8 @@ function SearchBar(props) {
         console.log(error);
       }
       setRecipes(data1[screen.toLowerCase()]);
+    history.push('/recipes');
+      
       if (data1[screen.toLowerCase()] === null) {
         global.alert(sorryString);
       }
@@ -53,6 +62,8 @@ function SearchBar(props) {
         if (data2[screen.toLowerCase()] === null) {
           global.alert(sorryString);
         }
+    history.push('/recipes');
+
       }
       break;
     default:
