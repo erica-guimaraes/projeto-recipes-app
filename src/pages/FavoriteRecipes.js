@@ -5,9 +5,10 @@ import blackHeartIcon from '../images/blackHeartIcon.svg';
 import shareIcon from '../images/shareIcon.svg';
 
 function FavoriteRecipes() {
-  const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes')) || [];
-
   const [urlCopied, setUrlCopied] = useState(false);
+  const [favoriteRecipes, setFavoriteRecipes] = useState(
+    JSON.parse(localStorage.getItem('favoriteRecipes')) || [],
+  );
 
   const copyUrlToClipboard = (recipeId, recipeType) => {
     const url = `${window.location.origin}/${recipeType}s/${recipeId}`;
@@ -25,6 +26,12 @@ function FavoriteRecipes() {
     setTimeout(() => {
       setUrlCopied(false);
     }, copiedMessageTimeLimit);
+  };
+
+  const removeFavorite = (recipeId) => {
+    const newFavorites = favoriteRecipes.filter((recipe) => recipe.id !== recipeId);
+    setFavoriteRecipes(newFavorites);
+    localStorage.setItem('favoriteRecipes', JSON.stringify(newFavorites));
   };
 
   return (
@@ -53,7 +60,7 @@ function FavoriteRecipes() {
               alt="share"
             />
           </button>
-          <button>
+          <button onClick={ () => removeFavorite(recipe.id) }>
             <img
               data-testid={ `${index}-horizontal-favorite-btn` }
               src={ blackHeartIcon }
@@ -64,7 +71,7 @@ function FavoriteRecipes() {
         </div>
       ))}
 
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }
