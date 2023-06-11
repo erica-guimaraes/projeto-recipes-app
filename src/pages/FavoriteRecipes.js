@@ -9,6 +9,7 @@ function FavoriteRecipes() {
   const [favoriteRecipes, setFavoriteRecipes] = useState(
     JSON.parse(localStorage.getItem('favoriteRecipes')) || [],
   );
+  const [filteredRecipes, setFilteredRecipes] = useState(favoriteRecipes);
 
   const copyUrlToClipboard = (recipeId, recipeType) => {
     const url = `${window.location.origin}/${recipeType}s/${recipeId}`;
@@ -31,17 +32,47 @@ function FavoriteRecipes() {
   const removeFavorite = (recipeId) => {
     const newFavorites = favoriteRecipes.filter((recipe) => recipe.id !== recipeId);
     setFavoriteRecipes(newFavorites);
+    setFilteredRecipes(newFavorites);
     localStorage.setItem('favoriteRecipes', JSON.stringify(newFavorites));
+  };
+
+  const filterRecipes = (type) => {
+    switch (type) {
+    case 'meals':
+      setFilteredRecipes(favoriteRecipes.filter((recipe) => recipe.type === 'meal'));
+      break;
+    case 'drinks':
+      setFilteredRecipes(favoriteRecipes.filter((recipe) => recipe.type === 'drink'));
+      break;
+    default:
+      setFilteredRecipes(favoriteRecipes);
+      break;
+    }
   };
 
   return (
     <div>
       <Header title="Favorite Recipes" />
-      <button data-testid="filter-by-all-btn">All</button>
-      <button data-testid="filter-by-meal-btn">Meals</button>
-      <button data-testid="filter-by-drink-btn">Drinks</button>
+      <button
+        data-testid="filter-by-all-btn"
+        onClick={ () => filterRecipes() }
+      >
+        All
+      </button>
+      <button
+        data-testid="filter-by-meal-btn"
+        onClick={ () => filterRecipes('meals') }
+      >
+        Meals
+      </button>
+      <button
+        data-testid="filter-by-drink-btn"
+        onClick={ () => filterRecipes('drinks') }
+      >
+        Drinks
+      </button>
 
-      {favoriteRecipes.map((recipe, index) => (
+      {filteredRecipes.map((recipe, index) => (
         <div key={ recipe.id }>
           <img
             data-testid={ `${index}-horizontal-image` }
