@@ -123,4 +123,89 @@ describe('Testando FavoriteRecipes Page', () => {
 
     expect(recipeGG).not.toBeInTheDocument();
   });
+
+  it('Verifica se ao clicar no botão Meals, apenas as receitas do tipo Meal aparecem na tela', async () => {
+    localStorage.setItem('favoriteRecipes', JSON.stringify(mockFavoriteRecipes));
+
+    await act(async () => {
+      render(
+        <MemoryRouter>
+          <FavoriteRecipes />
+        </MemoryRouter>,
+      );
+    });
+
+    const buttonMeals = screen.getByRole('button', { name: /meals/i });
+
+    const recipeA1 = screen.queryByText('A1');
+    const recipeBurek = screen.queryByText('Burek');
+    const recipeCorba = screen.queryByText('Corba');
+
+    expect(recipeA1).toBeInTheDocument();
+
+    userEvent.click(buttonMeals);
+
+    expect(recipeA1).not.toBeInTheDocument();
+
+    expect(recipeBurek).toBeInTheDocument();
+    expect(recipeCorba).toBeInTheDocument();
+  });
+
+  it('Verifica se ao clicar no botão Drinks apenas os drinks aparecem na tela e ao clicar no botão All todas as receitas favoritas aparecem na tela', async () => {
+    localStorage.setItem('favoriteRecipes', JSON.stringify(mockFavoriteRecipes));
+
+    await act(async () => {
+      render(
+        <MemoryRouter>
+          <FavoriteRecipes />
+        </MemoryRouter>,
+      );
+    });
+
+    const buttonDrinks = screen.getByRole('button', { name: /drinks/i });
+    userEvent.click(buttonDrinks);
+
+    const recipeGG = screen.queryByText('GG');
+    const recipeA1 = screen.queryByText('A1');
+    const recipeAce = screen.queryByText('Ace');
+
+    expect(recipeGG).toBeInTheDocument();
+    expect(recipeA1).toBeInTheDocument();
+    expect(recipeAce).toBeInTheDocument();
+
+    const buttonAll = screen.getByRole('button', { name: /all/i });
+    userEvent.click(buttonAll);
+
+    const recipeBurek = screen.queryByText('Burek');
+    const recipeCorba = screen.queryByText('Corba');
+
+    expect(recipeGG).toBeInTheDocument();
+    expect(recipeA1).toBeInTheDocument();
+    expect(recipeAce).toBeInTheDocument();
+    expect(recipeBurek).toBeInTheDocument();
+    expect(recipeCorba).toBeInTheDocument();
+  });
+
+  it('Verifica se ao clicar no botão share da primeira receita da tela é copiado para o clipboard o URL da tela de detalhes da receita', async () => {
+    localStorage.setItem('favoriteRecipes', JSON.stringify(mockFavoriteRecipes));
+
+    await act(async () => {
+      render(
+        <MemoryRouter>
+          <FavoriteRecipes />
+        </MemoryRouter>,
+      );
+    });
+
+    const buttonsShare = screen.getAllByTestId(/-horizontal-share-btn/);
+    const firstShareButton = buttonsShare[0];
+
+    const clipboardSpy = jest.spyOn(navigator.clipboard, 'writeText');
+
+    userEvent.click(firstShareButton);
+
+    expect(clipboardSpy).toHaveBeenCalledWith(expect.stringContaining('/drinks/15997'));
+
+    clipboardSpy.mockRestore();
+  });
 });
