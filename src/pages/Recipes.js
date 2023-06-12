@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
@@ -12,14 +12,9 @@ function Recipes() {
     setListedRecipes,
     setSearchInputText,
     loading,
-    radioSelected,
   } = useContext(Context);
   const location = useLocation().pathname;
   const limitResults = 12;
-
-  useEffect(() => {
-
-  }, [searchInputText, radioSelected]);
 
   return (
     <div>

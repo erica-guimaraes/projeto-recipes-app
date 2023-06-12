@@ -17,62 +17,85 @@ function Provider({ children }) {
   const screenWithoutLowerCase = location.slice(1).replace('s', '');
   const magic3 = 3;
   const URL = location === '/meals' ? 'https://www.themealdb.com/api/json/v1/1' : 'https://www.thecocktaildb.com/api/json/v1/1';
+  const sorryString = 'Sorry, we haven\'t found any recipes for these filters.';
+  const firstTwelveRecipes = 12;
+
+  async function fetchRecipesByIngredient() {
+    const responseIngredient = await fetch(`${URL}/filter.php?i=${searchInputText}`);
+    const data = await responseIngredient.json();
+    if (data[screen] === null) {
+      global.alert(sorryString);
+      return;
+    }
+    setListedRecipes(data[screen]);
+  }
+
+  async function fetchRecipesByName() {
+    const responseName = await fetch(`${URL}/search.php?s=${searchInputText}`);
+    const data1 = await responseName.json();
+    if (data1[screen] === null) {
+      global.alert(sorryString);
+      return;
+    }
+    if (data1[screen].length === 1) {
+      const id = `id${screenWithoutLowerCase}`;
+      const thirdChar = id.charAt(2).toUpperCase();
+      const modifiedId = id.slice(0, 2) + thirdChar + id.slice(magic3);
+      history.push(`/${screen}/${data1[screen][0][modifiedId]}`);
+    }
+    setListedRecipes(data1[screen]);
+  }
+
+  async function fetchRecipesByFirstLetter() {
+    if (searchInputText.length > 1) {
+      global.alert('Your search must have only 1 (one) character');
+      return;
+    }
+    const responseFLetter = await fetch(`${URL}/search.php?f=${searchInputText}`);
+    const data2 = await responseFLetter.json();
+    if (data2[screen] === null) {
+      global.alert(sorryString);
+      return;
+    }
+    setListedRecipes(data2[screen]);
+  }
+
+  async function fetchDefaultRecipes() {
+    const response = await fetch(`${URL}/search.php?s=`);
+    const data3 = await response.json();
+    if (data3[screen] && data3[screen].length > 0) {
+      setListedRecipes(data3[screen].slice(0, firstTwelveRecipes));
+    }
+  }
 
   async function fetchApi() {
-    let responseIngredient; let responseName; let responseFLetter; let data; let data1;
-    let data2; let response; let data3; const firstTwelveRecipes = 12;
-    const sorryString = 'Sorry, we haven\'t found any recipes for these filters.';
     switch (radioSelected) {
     case 'Ingredient':
-      responseIngredient = await fetch(`${URL}/filter.php?i=${searchInputText}`);
-      data = await responseIngredient.json();
-      if (data[screen] === null) {
-        global.alert(sorryString);
-        break;
-      }
-      setListedRecipes(data[screen]);
+      await fetchRecipesByIngredient();
       break;
     case 'Name':
-      responseName = await fetch(`${URL}/search.php?s=${searchInputText}`);
-      data1 = await responseName.json();
-      if (data1[screen] === null) {
-        global.alert(sorryString);
-        break;
-      }
-      if (data1[screen].length === 1) {
-        const id = `id${screenWithoutLowerCase}`;
-        const thirdChar = id.charAt(2).toUpperCase();
-        const modifiedId = id.slice(0, 2) + thirdChar + id.slice(magic3);
-        history.push(`/${screen}/${data1[screen][0][modifiedId]}`);
-      }
-      setListedRecipes(data1[screen]);
+      await fetchRecipesByName();
       break;
     case 'First Letter':
-      if (searchInputText.length > 1) {
-        global.alert('Your search must have only 1 (one) character');
-      } else {
-        responseFLetter = await fetch(`${URL}/search.php?f=${searchInputText}`);
-        data2 = await responseFLetter.json();
-        if (data2[screen] === null) {
-          global.alert(sorryString);
-          break;
-        }
-        setListedRecipes(data2[screen]);
-      }
+      await fetchRecipesByFirstLetter();
       break;
     default:
-      response = await fetch(`${URL}/search.php?s=`);
-      data3 = await response.json();
-      setListedRecipes(data3[screen].slice(0, firstTwelveRecipes));
+      await fetchDefaultRecipes();
       break;
     }
     setLoading(false);
   }
-
   useEffect(() => {
     setLoading(true);
     fetchApi();
   }, [radioSelected]);
+
+  useEffect(() => {
+    if (location === '/meals' || location === '/drinks') {
+      setLoading(true);
+      fetchApi();
+    }
+  }, [location]);
 
   const context = useMemo(() => ({
     radioSelected,
@@ -101,8 +124,3 @@ Provider.propTypes = {
 };
 
 export default Provider;
-
-// Atualizar o nome do estado global "recipes" para listedRecipes e deixa-lo funcional
-// No final de cada case do switch do SearchBar, enviar a informação do estado local recipes para o estado global listedRecipes
-//
-//

@@ -10,15 +10,14 @@ function Login() {
   const isDisabled = !regexEmail.test(userEmail) || password.length <= minCharacter;
   const history = useHistory();
 
-  function handleSubmitButton(event) {
-    event.preventDefault();
+  function handleSubmitButton() {
     const user = { email: userEmail };
     localStorage.setItem('user', JSON.stringify(user));
     history.push('/meals');
   }
 
   return (
-    <form onSubmit={ handleSubmitButton }>
+    <form>
       <label htmlFor="email">
         <input
           id="email"
@@ -42,9 +41,10 @@ function Login() {
         <button
           name="submit"
           id="submit"
-          type="submit"
+          type="button"
           data-testid="login-submit-btn"
           disabled={ isDisabled }
+          onClick={ handleSubmitButton }
         >
           submit
         </button>
