@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Footer from '../components/Footer';
 import Header from '../components/Header';
 import blackHeartIcon from '../images/blackHeartIcon.svg';
 import shareIcon from '../images/shareIcon.svg';
@@ -108,8 +107,6 @@ function FavoriteRecipes() {
           { urlCopied && <p>Link copied!</p> }
         </div>
       ))}
-
-      {/* <Footer /> */}
     </div>
   );
 }
