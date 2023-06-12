@@ -115,5 +115,3 @@ function FavoriteRecipes() {
 }
 
 export default FavoriteRecipes;
-
-// tela de detalhes rota: /meals/:id-da-receita e /drinks/:id-da-receita
