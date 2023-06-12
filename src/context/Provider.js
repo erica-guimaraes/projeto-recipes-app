@@ -8,6 +8,7 @@ function Provider({ children }) {
   // const [password, setPassword] = useState('');
   const [filteredRecipes, setFilteredRecipes] = React.useState([]);
   const [searchInputText, setSearchInputText] = React.useState('');
+  const [listedCategories, setListedCategories] = React.useState({});
   const [listedRecipes, setListedRecipes] = React.useState([]);
   const location = useLocation().pathname;
   const [loading, setLoading] = React.useState(true);
@@ -15,8 +16,10 @@ function Provider({ children }) {
   const history = useHistory();
   const screen = location.slice(1).toLowerCase();
   const screenWithoutLowerCase = location.slice(1).replace('s', '');
+
   const magic3 = 3;
   const URL = location === '/meals' ? 'https://www.themealdb.com/api/json/v1/1' : 'https://www.thecocktaildb.com/api/json/v1/1';
+  const URLforCategory = location === '/meals' ? 'https://www.themealdb.com/api/json/v1/1/list.php?c=list' : 'https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list';
   const sorryString = 'Sorry, we haven\'t found any recipes for these filters.';
   const firstTwelveRecipes = 12;
 
@@ -61,6 +64,11 @@ function Provider({ children }) {
   }
 
   async function fetchDefaultRecipes() {
+    const responseCateg = await fetch(URLforCategory);
+    const dataCateg = await responseCateg.json();
+    if (dataCateg !== null) {
+      setListedCategories(dataCateg);
+    }
     const response = await fetch(`${URL}/search.php?s=`);
     const data3 = await response.json();
     if (data3[screen] && data3[screen].length > 0) {
@@ -80,22 +88,26 @@ function Provider({ children }) {
       await fetchRecipesByFirstLetter();
       break;
     default:
+      console.log('default');
       await fetchDefaultRecipes();
       break;
     }
     setLoading(false);
   }
-  useEffect(() => {
-    setLoading(true);
-    fetchApi();
-  }, [radioSelected]);
 
   useEffect(() => {
     if (location === '/meals' || location === '/drinks') {
       setLoading(true);
       fetchApi();
     }
-  }, [location]);
+  }, [radioSelected, location]);
+
+  // useEffect(() => {
+  //   if (location === '/meals' || location === '/drinks') {
+  //     setLoading(true);
+  //     fetchApi();
+  //   }
+  // }, [location]);
 
   const context = useMemo(() => ({
     radioSelected,
@@ -108,9 +120,11 @@ function Provider({ children }) {
     setListedRecipes,
     loading,
     setLoading,
+    listedCategories,
+    setListedCategories,
   }), [searchInputText, setSearchInputText, filteredRecipes, setFilteredRecipes,
     listedRecipes, setListedRecipes, loading, setLoading,
-    radioSelected, setRadioSelected]);
+    radioSelected, setRadioSelected, listedCategories, setListedCategories]);
 
   return (
     <Context.Provider value={ context }>
