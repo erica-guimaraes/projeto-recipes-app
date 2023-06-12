@@ -200,12 +200,17 @@ describe('Testando FavoriteRecipes Page', () => {
     const buttonsShare = screen.getAllByTestId(/-horizontal-share-btn/);
     const firstShareButton = buttonsShare[0];
 
-    const clipboardSpy = jest.spyOn(navigator.clipboard, 'writeText');
+    const clipboardWriteTextMock = jest.fn();
+    Object.defineProperty(navigator, 'clipboard', {
+      value: {
+        writeText: clipboardWriteTextMock.mockImplementation(() => Promise.resolve()),
+      },
+      configurable: true,
+    });
 
     userEvent.click(firstShareButton);
 
-    expect(clipboardSpy).toHaveBeenCalledWith(expect.stringContaining('/drinks/15997'));
-
-    clipboardSpy.mockRestore();
+    expect(clipboardWriteTextMock).toHaveBeenCalledWith('http://localhost/drinks/15997');
+    expect(clipboardWriteTextMock).toHaveBeenCalledTimes(1);
   });
 });
