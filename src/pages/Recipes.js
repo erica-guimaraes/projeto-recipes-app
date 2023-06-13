@@ -18,18 +18,14 @@ function Recipes() {
     fetchRecipesByCategory,
     setToggleAllClick,
     toggleAllClick,
+    actualCateg,
+    setActualCateg,
   } = useContext(Context);
   const history = useHistory();
   const location = useLocation().pathname;
   const limitResults = 12;
   const limitCategButtons = 5;
   // console.log(listedRecipes);
-
-  function handleButtonCategory(strCategory) {
-    // atualizar setListedRecipes com receitas que contenham a mesma strCategory que o parâmetro
-    // console.log(strCategory);
-    fetchRecipesByCategory(strCategory);
-  }
 
   function handleToggleAll() {
     if (toggleAllClick === true) {
@@ -38,9 +34,18 @@ function Recipes() {
     setToggleAllClick(true);
   }
 
-  function teste(idRecipe) {
-    // console.log(idRecipe);
-    // console.log(location)
+  function handleButtonCategory(strCategory) {
+    console.log(listedRecipes.strCategory);
+    if (actualCateg.length === 0 || strCategory !== actualCateg) {
+      setActualCateg(strCategory);
+      fetchRecipesByCategory(strCategory);
+      return;
+    }
+    setActualCateg([]);
+    handleToggleAll();
+  }
+
+  function handleRedirect(idRecipe) {
     history.push(`${location}/${idRecipe}`);
   }
 
@@ -94,7 +99,7 @@ function Recipes() {
                  .map((recipe, index) => (
                    <div key={ index } data-testid={ `${index}-recipe-card` }>
                      <button
-                       onClick={ () => teste(recipe.idMeal || recipe.idDrink) }
+                       onClick={ () => handleRedirect(recipe.idMeal || recipe.idDrink) }
                      >
                        <li key={ recipe.idMeal || recipe.idDrink }>
                          <p data-testid={ `${index}-card-name` }>

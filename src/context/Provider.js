@@ -10,6 +10,7 @@ function Provider({ children }) {
   const [searchInputText, setSearchInputText] = React.useState('');
   const [listedCategories, setListedCategories] = React.useState({});
   const [listedRecipes, setListedRecipes] = React.useState([]);
+  const [actualCateg, setActualCateg] = React.useState([]);
   const location = useLocation().pathname;
   const [loading, setLoading] = React.useState(true);
   const [radioSelected, setRadioSelected] = React.useState('');
@@ -135,10 +136,13 @@ function Provider({ children }) {
     fetchRecipesByCategory,
     toggleAllClick,
     setToggleAllClick,
+    actualCateg,
+    setActualCateg,
   }), [searchInputText, setSearchInputText, filteredRecipes, setFilteredRecipes,
     listedRecipes, setListedRecipes, loading, setLoading,
     radioSelected, setRadioSelected, listedCategories, setListedCategories,
-    fetchRecipesByCategory, toggleAllClick, setToggleAllClick]);
+    fetchRecipesByCategory, toggleAllClick, setToggleAllClick,
+    actualCateg, setActualCateg]);
 
   return (
     <Context.Provider value={ context }>
