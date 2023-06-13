@@ -7,6 +7,7 @@ import '../css/favoriteRecipes.css';
 
 function FavoriteRecipes() {
   const [urlCopied, setUrlCopied] = useState(false);
+  const [copiedRecipeId, setCopiedRecipeId] = useState(null);
   const [favoriteRecipes, setFavoriteRecipes] = useState(
     JSON.parse(localStorage.getItem('favoriteRecipes')) || [],
   );
@@ -18,16 +19,8 @@ function FavoriteRecipes() {
       .then(() => {
         console.log('Link copied!');
         setUrlCopied(true);
-      })
-      .catch((error) => {
-        console.error('Erro ao copiar a URL:', error);
+        setCopiedRecipeId(recipeId);
       });
-
-    const copiedMessageTimeLimit = 3000;
-
-    setTimeout(() => {
-      setUrlCopied(false);
-    }, copiedMessageTimeLimit);
   };
 
   const removeFavorite = (recipeId) => {
@@ -104,7 +97,7 @@ function FavoriteRecipes() {
               alt="favorite"
             />
           </button>
-          { urlCopied && <p>Link copied!</p> }
+          { urlCopied && copiedRecipeId === recipe.id && <p>Link copied!</p> }
         </div>
       ))}
     </div>
