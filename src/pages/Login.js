@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import '../css/login.css';
 
 function Login() {
   const [userEmail, setEmail] = useState('');
@@ -11,47 +10,41 @@ function Login() {
   const isDisabled = !regexEmail.test(userEmail) || password.length <= minCharacter;
   const history = useHistory();
 
-  function handleSubmitButton(event) {
-    event.preventDefault();
+  function handleSubmitButton() {
     const user = { email: userEmail };
     localStorage.setItem('user', JSON.stringify(user));
     history.push('/meals');
   }
 
   return (
-    <form onSubmit={ handleSubmitButton } className="container">
-      <h1 className="title">Recipes App</h1>
-      <label htmlFor="email" className="label">
+    <form>
+      <label htmlFor="email">
         <input
           id="email"
           name="email"
-          placeholder="Email"
           value={ userEmail }
           onChange={ ({ target }) => setEmail(target.value) }
           data-testid="email-input"
-          className="input"
         />
       </label>
       <label htmlFor="password">
         <input
           type="password"
           name="password"
-          placeholder="Password"
           value={ password }
           onChange={ ({ target }) => setPassword(target.value) }
           id="password"
           data-testid="password-input"
-          className="input"
         />
       </label>
-      <label htmlFor="submit" className="label">
+      <label htmlFor="submit">
         <button
           name="submit"
           id="submit"
-          type="submit"
-          className="button"
+          type="button"
           data-testid="login-submit-btn"
           disabled={ isDisabled }
+          onClick={ handleSubmitButton }
         >
           submit
         </button>
