@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import SearchBar from '../components/SearchBar';
@@ -18,7 +19,7 @@ function Recipes() {
     setToggleAllClick,
     toggleAllClick,
   } = useContext(Context);
-
+  const history = useHistory();
   const location = useLocation().pathname;
   const limitResults = 12;
   const limitCategButtons = 5;
@@ -35,6 +36,12 @@ function Recipes() {
       setToggleAllClick(false);
     }
     setToggleAllClick(true);
+  }
+
+  function teste(idRecipe) {
+    // console.log(idRecipe);
+    // console.log(location)
+    history.push(`${location}/${idRecipe}`);
   }
 
   return (
@@ -86,18 +93,22 @@ function Recipes() {
                && listedRecipes.slice(0, limitResults)
                  .map((recipe, index) => (
                    <div key={ index } data-testid={ `${index}-recipe-card` }>
-                     <li key={ recipe.idMeal || recipe.idDrink }>
-                       <p data-testid={ `${index}-card-name` }>
-                         {location === '/meals' ? recipe.strMeal : recipe.strDrink}
-                       </p>
-                     </li>
-                     <img
-                       width="200px"
-                       src={ location === '/meals' ? recipe.strMealThumb
-                         : recipe.strDrinkThumb }
-                       alt={ location === '/meals' ? recipe.strMeal : recipe.strDrink }
-                       data-testid={ `${index}-card-img` }
-                     />
+                     <button
+                       onClick={ () => teste(recipe.idMeal || recipe.idDrink) }
+                     >
+                       <li key={ recipe.idMeal || recipe.idDrink }>
+                         <p data-testid={ `${index}-card-name` }>
+                           {location === '/meals' ? recipe.strMeal : recipe.strDrink}
+                         </p>
+                       </li>
+                       <img
+                         width="200px"
+                         src={ location === '/meals' ? recipe.strMealThumb
+                           : recipe.strDrinkThumb }
+                         alt={ location === '/meals' ? recipe.strMeal : recipe.strDrink }
+                         data-testid={ `${index}-card-img` }
+                       />
+                     </button>
                    </div>
                  ))}
           </ul>
