@@ -13,15 +13,25 @@ function Provider({ children }) {
   const location = useLocation().pathname;
   const [loading, setLoading] = React.useState(true);
   const [radioSelected, setRadioSelected] = React.useState('');
+  const [toggleAllClick, setToggleAllClick] = React.useState(false);
   const history = useHistory();
   const screen = location.slice(1).toLowerCase();
   const screenWithoutLowerCase = location.slice(1).replace('s', '');
 
   const magic3 = 3;
   const URL = location === '/meals' ? 'https://www.themealdb.com/api/json/v1/1' : 'https://www.thecocktaildb.com/api/json/v1/1';
-  const URLforCategory = location === '/meals' ? 'https://www.themealdb.com/api/json/v1/1/list.php?c=list' : 'https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list';
+  const URLCategories = location === '/meals' ? 'https://www.themealdb.com/api/json/v1/1/list.php?c=list' : 'https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list';
+  const URLRecipesByCategory = location === '/meals' ? 'https://www.themealdb.com/api/json/v1/1/filter.php?c=' : 'https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=';
   const sorryString = 'Sorry, we haven\'t found any recipes for these filters.';
-  const firstTwelveRecipes = 12;
+
+  const fetchRecipesByCategory = async (param) => {
+    const responseRecipeCateg = await fetch(`${URLRecipesByCategory}${param}`);
+    const data = await responseRecipeCateg.json();
+    if (data === null) {
+      return;
+    }
+    setListedRecipes(data.meals || data.drinks);
+  };
 
   async function fetchRecipesByIngredient() {
     const responseIngredient = await fetch(`${URL}/filter.php?i=${searchInputText}`);
@@ -64,7 +74,7 @@ function Provider({ children }) {
   }
 
   async function fetchDefaultRecipes() {
-    const responseCateg = await fetch(URLforCategory);
+    const responseCateg = await fetch(URLCategories);
     const dataCateg = await responseCateg.json();
     if (dataCateg !== null) {
       setListedCategories(dataCateg);
@@ -72,7 +82,7 @@ function Provider({ children }) {
     const response = await fetch(`${URL}/search.php?s=`);
     const data3 = await response.json();
     if (data3[screen] && data3[screen].length > 0) {
-      setListedRecipes(data3[screen].slice(0, firstTwelveRecipes));
+      setListedRecipes(data3[screen]);
     }
   }
 
@@ -100,7 +110,7 @@ function Provider({ children }) {
       setLoading(true);
       fetchApi();
     }
-  }, [radioSelected, location]);
+  }, [radioSelected, location, toggleAllClick]);
 
   // useEffect(() => {
   //   if (location === '/meals' || location === '/drinks') {
@@ -122,9 +132,13 @@ function Provider({ children }) {
     setLoading,
     listedCategories,
     setListedCategories,
+    fetchRecipesByCategory,
+    toggleAllClick,
+    setToggleAllClick,
   }), [searchInputText, setSearchInputText, filteredRecipes, setFilteredRecipes,
     listedRecipes, setListedRecipes, loading, setLoading,
-    radioSelected, setRadioSelected, listedCategories, setListedCategories]);
+    radioSelected, setRadioSelected, listedCategories, setListedCategories,
+    fetchRecipesByCategory, toggleAllClick, setToggleAllClick]);
 
   return (
     <Context.Provider value={ context }>
