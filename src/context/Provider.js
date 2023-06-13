@@ -18,7 +18,6 @@ function Provider({ children }) {
   const history = useHistory();
   const screen = location.slice(1).toLowerCase();
   const screenWithoutLowerCase = location.slice(1).replace('s', '');
-
   const magic3 = 3;
   const URL = location === '/meals' ? 'https://www.themealdb.com/api/json/v1/1' : 'https://www.thecocktaildb.com/api/json/v1/1';
   const URLCategories = location === '/meals' ? 'https://www.themealdb.com/api/json/v1/1/list.php?c=list' : 'https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list';
