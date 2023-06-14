@@ -5,6 +5,7 @@ import Footer from '../components/Footer';
 import Header from '../components/Header';
 import SearchBar from '../components/SearchBar';
 import Context from '../context/Context';
+import DetailsContext from '../context/DetailsContext';
 
 function Recipes() {
   const {
@@ -20,7 +21,9 @@ function Recipes() {
     toggleAllClick,
     actualCateg,
     setActualCateg,
+    setLocationRecipe,
   } = useContext(Context);
+  const { setGlobalRecipeId } = useContext(DetailsContext);
   const history = useHistory();
   const location = useLocation().pathname;
   const limitResults = 12;
@@ -35,17 +38,20 @@ function Recipes() {
   }
 
   function handleButtonCategory(strCategory) {
-    console.log(listedRecipes.strCategory);
+    // console.log(listedRecipes.strCategory);
     if (actualCateg.length === 0 || strCategory !== actualCateg) {
       setActualCateg(strCategory);
       fetchRecipesByCategory(strCategory);
       return;
     }
-    setActualCateg([]);
     handleToggleAll();
+    setActualCateg([]);
   }
 
   function handleRedirect(idRecipe) {
+    setGlobalRecipeId(idRecipe);
+    // console.log(globalRecipeId);
+    setLocationRecipe(location);
     history.push(`${location}/${idRecipe}`);
   }
 
