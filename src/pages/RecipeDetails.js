@@ -13,8 +13,8 @@ function RecipeDetails() {
 
   useEffect(() => {
     async function fetchRecomendedRecipes() {
-      const screen = location.includes('meal') ? 'meals' : 'drinks';
-      const URL = screen === 'drinks' ? 'https://www.themealdb.com/api/json/v1/1' : 'https://www.thecocktaildb.com/api/json/v1/1';
+      const screen = !location.includes('meal') ? 'meals' : 'drinks';
+      const URL = screen !== 'drinks' ? 'https://www.themealdb.com/api/json/v1/1' : 'https://www.thecocktaildb.com/api/json/v1/1';
       const response = await fetch(`${URL}/search.php?s=`);
       const data3 = await response.json();
       if (data3[screen] && data3[screen].length > 0) {
@@ -23,12 +23,8 @@ function RecipeDetails() {
     }
     fetchDetailsById(id);
     fetchRecomendedRecipes();
-  }, [location,
-    id,
-    fetchDetailsById]);
+  }, []);
 
-  // console.log(fetchRecipeById)
-  // const magic10 = 10;
   const magic13 = 13;
   const magic6 = 6;
   return loading ? (
@@ -74,16 +70,28 @@ function RecipeDetails() {
 
          </div>
        ))}
-      <div>
+      <div
+        style={ {
+          display: 'flex',
+          maxWidth: '400px',
+          overflowX: 'scroll',
+        } }
+      >
         {recomendedRecipes && recomendedRecipes.length > 0
         && recomendedRecipes.slice(0, magic6).map((recipe, index) => (
-          <div key={ index }>
+          <div
+            data-testid={ `${index}-recommendation-card` }
+            key={ index }
+            style={ {
+              minWidth: '200px',
+            } }
+          >
             <img
+              width="80px"
               src={ recipe.strMealThumb || recipe.strDrinkThumb }
               alt={ recipe.strMeal || recipe.strDrink }
-              data-testid={ `${index}-recomendation-card` }
             />
-            <p data-testid={ `${index}-recomendation-title` }>
+            <p data-testid={ `${index}-recommendation-title` }>
               {recipe.strMeal || recipe.strDrink}
             </p>
           </div>
