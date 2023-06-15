@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import DetailsContext from '../context/DetailsContext';
 import Footer from '../components/Footer';
@@ -8,9 +8,24 @@ function RecipeDetails() {
   const { fetchDetailsById, fetchRecipeById, loading } = useContext(DetailsContext);
   const { id } = useParams();
   const location = useLocation().pathname;
+
+  const [recomendedRecipes, setRecomendedRecipes] = useState([]);
+
   useEffect(() => {
+    async function fetchRecomendedRecipes() {
+      const screen = location.includes('meal') ? 'meals' : 'drinks';
+      const URL = screen === 'drinks' ? 'https://www.themealdb.com/api/json/v1/1' : 'https://www.thecocktaildb.com/api/json/v1/1';
+      const response = await fetch(`${URL}/search.php?s=`);
+      const data3 = await response.json();
+      if (data3[screen] && data3[screen].length > 0) {
+        setRecomendedRecipes(data3[screen]);
+      }
+    }
     fetchDetailsById(id);
-  }, [location]);
+    fetchRecomendedRecipes();
+  }, [location,
+    id,
+    fetchDetailsById]);
 
   // console.log(fetchRecipeById)
   // const magic10 = 10;
@@ -58,6 +73,21 @@ function RecipeDetails() {
 
          </div>
        ))}
+      <div>
+        {recomendedRecipes && recomendedRecipes.length > 0
+        && recomendedRecipes.slice(0, 6).map((recipe, index) => (
+          <div key={ index }>
+            <img
+              src={ recipe.strMealThumb || recipe.strDrinkThumb }
+              alt={ recipe.strMeal || recipe.strDrink }
+              data-testid={ `${index}-recomendation-card` }
+            />
+            <p data-testid={ `${index}-recomendation-title` }>
+              {recipe.strMeal || recipe.strDrink}
+            </p>
+          </div>
+        ))}
+      </div>
       <Footer />
     </div>
   );
