@@ -1,82 +1,129 @@
-import React, { useState, useContext } from 'react';
-import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
-import Context from '../context/Context';
+import React, { useContext } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import Footer from '../components/Footer';
+import Header from '../components/Header';
+import SearchBar from '../components/SearchBar';
+import Context from '../context/Context';
+import DetailsContext from '../context/DetailsContext';
 
 function Recipes() {
-  const { searchInputText, recipes, setRecipes, screen, endpoint } = useContext(Context);
-  console.log(recipes);
-
+  const {
+    searchInputText,
+    listedRecipes,
+    setListedRecipes,
+    setSearchInputText,
+    loading,
+    listedCategories,
+    fetchRecipesByCategory,
+    setToggleAllClick,
+    toggleAllClick,
+    actualCateg,
+    setActualCateg,
+    setLocationRecipe,
+  } = useContext(Context);
+  const { setGlobalRecipeId } = useContext(DetailsContext);
   const history = useHistory();
-  const fetchApi = async () => {
-    let responseIngredient;
-    let responseName;
-    let responseFLetter;
-    let data;
-    let data1;
-    let data2;
-    const sorryString = 'Sorry, we haven\'t found any recipes for these filters.';
-    switch (radioSelected) {
-    case 'Ingredient':
-      responseIngredient = await fetch(`${endpoint}filter.php?i=${searchInputText}`);
-      data = await responseIngredient.json();
-      setRecipes(data[screen.toLowerCase()]);
-      if (data[screen.toLowerCase()] === null) {
-        global.alert(sorryString);
-      }
-      console.log(data);
-      break;
-    case 'Name':
-      responseName = await fetch(`${endpoint}search.php?s=${searchInputText}`);
-      data1 = await responseName.json();
-      try {
-        if (data1[screen.toLowerCase()].length === 1) {
-          const id = `id${screen.replace('s', '')}`;
-          history.push(`/${screen.toLowerCase()}/${data1[screen.toLowerCase()][0][id]}`);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-      setRecipes(data1[screen.toLowerCase()]);
-      if (data1[screen.toLowerCase()] === null) {
-        global.alert(sorryString);
-      }
-      break;
-    case 'First Letter':
-      if (searchInputText.length > 1) {
-        global.alert('Your search must have only 1 (one) character');
-      } else {
-        responseFLetter = await fetch(`${endpoint}search.php?f=${searchInputText}`);
-        data2 = await responseFLetter.json();
-        setRecipes(data2[screen.toLowerCase()]);
-        if (data2[screen.toLowerCase()] === null) {
-          global.alert(sorryString);
-        }
-      }
-      break;
-    default:
-      break;
-    }
-  };
+  const location = useLocation().pathname;
+  const limitResults = 12;
+  const limitCategButtons = 5;
+  // console.log(listedRecipes);
 
-  const recipesString = `str${screen.replace('s', '')}`;
-  const magic12 = 12;
+  function handleToggleAll() {
+    if (toggleAllClick === true) {
+      setToggleAllClick(false);
+    }
+    setToggleAllClick(true);
+  }
+
+  function handleButtonCategory(strCategory) {
+    // console.log(listedRecipes.strCategory);
+    if (actualCateg.length === 0 || strCategory !== actualCateg) {
+      setActualCateg(strCategory);
+      fetchRecipesByCategory(strCategory);
+      return;
+    }
+    handleToggleAll();
+    setActualCateg([]);
+  }
+
+  function handleRedirect(idRecipe) {
+    setGlobalRecipeId(idRecipe);
+    // console.log(globalRecipeId);
+    setLocationRecipe(location);
+    history.push(`${location}/${idRecipe}`);
+  }
+
   return (
     <div>
-      {recipes
-      && recipes.length > 0
-      && recipes.map((recipe, index) => index < magic12
-      && (
-        <div key={ index } data-testid={ `${index}-recipe-card` }>
-          <p data-testid={ `${index}-card-name` }>{recipe[recipesString]}</p>
-          <img
-            src={ recipe[`str${screen.replace('s', '')}Thumb`] }
-            alt={ recipe[recipesString] }
-            data-testid={ `${index}-card-img` }
-          />
+      {location === '/meals' ? <Header title="Meals" /> : <Header title="Drinks" />}
+      <SearchBar
+        searchInputText={ searchInputText }
+        setSearchInputText={ setSearchInputText }
+        setListedRecipes={ setListedRecipes }
+      />
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <div>
+          <ul>
+            <button
+              data-testid="All-category-filter"
+              onClick={ handleToggleAll }
+            >
+              All
+            </button>
+            {listedCategories.meals
+             && listedCategories.meals.slice(0, limitCategButtons)
+               .map((categButtons, index) => (
+                 <div key={ index }>
+                   <button
+                     data-testid={ `${categButtons.strCategory}-category-filter` }
+                     onClick={ () => handleButtonCategory(categButtons.strCategory) }
+                   >
+                     {categButtons.strCategory}
+                   </button>
+                 </div>
+               ))}
+            {listedCategories.drinks
+             && listedCategories.drinks.slice(0, limitCategButtons)
+               .map((categButtons, index) => (
+                 <div key={ index }>
+                   <button
+                     data-testid={ `${categButtons.strCategory}-category-filter` }
+                     onClick={ () => handleButtonCategory(categButtons.strCategory) }
+                   >
+                     {categButtons.strCategory}
+                   </button>
+                 </div>
+               ))}
+          </ul>
+          <ul>
+            {listedRecipes.length > 0
+               && listedRecipes.slice(0, limitResults)
+                 .map((recipe, index) => (
+                   <div key={ index } data-testid={ `${index}-recipe-card` }>
+                     <button
+                       onClick={ () => handleRedirect(recipe.idMeal || recipe.idDrink) }
+                     >
+                       <li key={ recipe.idMeal || recipe.idDrink }>
+                         <p data-testid={ `${index}-card-name` }>
+                           {location === '/meals' ? recipe.strMeal : recipe.strDrink}
+                         </p>
+                       </li>
+                       <img
+                         width="200px"
+                         src={ location === '/meals' ? recipe.strMealThumb
+                           : recipe.strDrinkThumb }
+                         alt={ location === '/meals' ? recipe.strMeal : recipe.strDrink }
+                         data-testid={ `${index}-card-img` }
+                       />
+                     </button>
+                   </div>
+                 ))}
+          </ul>
         </div>
-      ))}
+      )}
       <Footer />
     </div>
   );

@@ -1,10 +1,7 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import Context from '../context/Context';
 
 function Login() {
-  const { setUserEmailProvider } = useContext(Context);
-
   const [userEmail, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -13,15 +10,14 @@ function Login() {
   const isDisabled = !regexEmail.test(userEmail) || password.length <= minCharacter;
   const history = useHistory();
 
-  function handleSubmitButton(event) {
-    event.preventDefault();
+  function handleSubmitButton() {
     const user = { email: userEmail };
     localStorage.setItem('user', JSON.stringify(user));
     history.push('/meals');
   }
 
   return (
-    <form onSubmit={ handleSubmitButton }>
+    <form>
       <label htmlFor="email">
         <input
           id="email"
@@ -45,10 +41,10 @@ function Login() {
         <button
           name="submit"
           id="submit"
-          type="submit"
+          type="button"
           data-testid="login-submit-btn"
           disabled={ isDisabled }
-          onClick={ () => setUserEmailProvider(userEmail) }
+          onClick={ handleSubmitButton }
         >
           submit
         </button>
