@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import DetailsContext from '../context/DetailsContext';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
@@ -9,6 +10,7 @@ function RecipeDetails() {
   const { fetchDetailsById, fetchRecipeById, loading } = useContext(DetailsContext);
   const { id } = useParams();
   const location = useLocation().pathname;
+  const history = useHistory();
 
   const [recomendedRecipes, setRecomendedRecipes] = useState([]);
 
@@ -103,6 +105,9 @@ function RecipeDetails() {
             style={ { position: 'fixed', bottom: '0' } }
             type="button"
             data-testid="start-recipe-btn"
+            onClick={ () => {
+              history.push(`${location}/in-progress`);
+            } }
           >
             {isInProgress ? 'Continue Recipe' : 'Start Recipe'}
           </button>
