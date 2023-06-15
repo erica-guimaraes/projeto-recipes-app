@@ -25,6 +25,10 @@ function RecipeDetails() {
     fetchRecomendedRecipes();
   }, []);
 
+  const isDoneRecipe = localStorage.getItem('doneRecipes')
+    ? JSON.parse(localStorage.getItem('doneRecipes')).some((recipe) => recipe.id === id)
+    : false;
+
   const magic13 = 13;
   const magic6 = 6;
   return loading ? (
@@ -98,13 +102,15 @@ function RecipeDetails() {
         ))}
       </div>
       <Footer>
-        <button
-          style={ { position: 'fixed', bottom: '0' } }
-          type="button"
-          data-testid="start-recipe-btn"
-        >
-          Start Recipe
-        </button>
+        {!isDoneRecipe && (
+          <button
+            style={ { position: 'fixed', bottom: '0' } }
+            type="button"
+            data-testid="start-recipe-btn"
+          >
+            Start Recipe
+          </button>
+        )}
       </Footer>
     </div>
   );
