@@ -97,7 +97,15 @@ function RecipeDetails() {
           </div>
         ))}
       </div>
-      <Footer />
+      <Footer>
+        <button
+          style={ { position: 'fixed', bottom: '0' } }
+          type="button"
+          data-testid="start-recipe-btn"
+        >
+          Start Recipe
+        </button>
+      </Footer>
     </div>
   );
 }
