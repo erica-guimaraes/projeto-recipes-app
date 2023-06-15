@@ -30,6 +30,7 @@ function RecipeDetails() {
   // console.log(fetchRecipeById)
   // const magic10 = 10;
   const magic13 = 13;
+  const magic6 = 6;
   return loading ? (
     <p>Loading...</p>
   ) : (
@@ -75,7 +76,7 @@ function RecipeDetails() {
        ))}
       <div>
         {recomendedRecipes && recomendedRecipes.length > 0
-        && recomendedRecipes.slice(0, 6).map((recipe, index) => (
+        && recomendedRecipes.slice(0, magic6).map((recipe, index) => (
           <div key={ index }>
             <img
               src={ recipe.strMealThumb || recipe.strDrinkThumb }
