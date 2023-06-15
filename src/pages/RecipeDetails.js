@@ -8,13 +8,12 @@ function RecipeDetails() {
   const { fetchDetailsById, fetchRecipeById, loading } = useContext(DetailsContext);
   const { id } = useParams();
   const location = useLocation().pathname;
-  // console.log(globalRecipeId);
   useEffect(() => {
     fetchDetailsById(id);
   }, [location]);
 
   // console.log(fetchRecipeById)
-  const magic10 = 10;
+  // const magic10 = 10;
   const magic13 = 13;
   return loading ? (
     <p>Loading...</p>
@@ -35,29 +34,29 @@ function RecipeDetails() {
                || option.strCategory}
            </p>
            <ul>
-             {Object.entries(option).map((entry, indexEntries) => { // entries para pegar o valor sem chamar fetchRecipeById novamente
-               if (
-                 entry[0].startsWith('strIngredient') // keys estavam diferentes, buscando semelhantes
-                   && entry[1] !== null && entry[1] !== '' // removendo ingredientes vazios
-               ) {
-                 const ingredientIndex = indexEntries + 1 - magic10; // gambiarra para pegar o index do ingrediente
-                 return (
-                   <li
-                     key={ entry[1] }
-                     data-testid={ `${ingredientIndex}-ingredient-name-and-measure` }
-                   >
-                     {entry[1]}
-                     {' '}
-                     {option[`strMeasure${entry[0].slice(magic13)}`]}
-                   </li>
-                 );
-               }
-               return null;
-             })}
+             {Object.entries(option).filter((details) => details[0]
+               .includes('strIngredient') && details[1])
+               .map((entry, indexEntries) => (// entries para pegar o valor sem chamar fetchRecipeById novamente
+                 <li
+                   key={ entry[1] }
+                   data-testid={ `${indexEntries}-ingredient-name-and-measure` }
+                 >
+                   {entry[1]}
+                   {' '}
+                   {option[`strMeasure${entry[0].slice(magic13)}`]}
+                 </li>
+               ))}
            </ul>
            <p data-testid="instructions">{option.strInstructions}</p>
-         </div>
+           <iframe
+             title="video"
+             data-testid="video"
+             src={ option.strYoutube }
+           >
+             Vídeo
+           </iframe>
 
+         </div>
        ))}
       <Footer />
     </div>
