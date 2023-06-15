@@ -28,7 +28,6 @@ function Recipes() {
   const location = useLocation().pathname;
   const limitResults = 12;
   const limitCategButtons = 5;
-  // console.log(listedRecipes);
 
   function handleToggleAll() {
     if (toggleAllClick === true) {
@@ -38,7 +37,6 @@ function Recipes() {
   }
 
   function handleButtonCategory(strCategory) {
-    // console.log(listedRecipes.strCategory);
     if (actualCateg.length === 0 || strCategory !== actualCateg) {
       setActualCateg(strCategory);
       fetchRecipesByCategory(strCategory);
@@ -50,7 +48,6 @@ function Recipes() {
 
   function handleRedirect(idRecipe) {
     setGlobalRecipeId(idRecipe);
-    // console.log(globalRecipeId);
     setLocationRecipe(location);
     history.push(`${location}/${idRecipe}`);
   }

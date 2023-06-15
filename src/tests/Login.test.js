@@ -5,7 +5,7 @@ import { Router } from 'react-router-dom';
 import { act } from 'react-dom/test-utils';
 import Login from '../pages/Login';
 
-describe('Testando Login Page', () => {
+describe('Testando a página de Login ', () => {
   it('Verifica se o botão de login está desabilitado e se habilita conforme os inputs são validados', () => {
     render(<Login />);
     const email = 'alguem@alguem.com';

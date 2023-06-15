@@ -8,12 +8,10 @@ function RecipeDetails() {
   const { fetchDetailsById, fetchRecipeById, loading } = useContext(DetailsContext);
   const { id } = useParams();
   const location = useLocation().pathname;
-  // console.log(globalRecipeId);
   useEffect(() => {
     fetchDetailsById(id);
   }, [location]);
 
-  // console.log(fetchRecipeById)
   const magic10 = 10;
   const magic13 = 13;
   return loading ? (
