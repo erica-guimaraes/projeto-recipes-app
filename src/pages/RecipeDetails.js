@@ -10,13 +10,10 @@ function RecipeDetails() {
   const { fetchDetailsById, fetchRecipeById, loading } = useContext(DetailsContext);
   const { id } = useParams();
   const location = useLocation().pathname;
-<<<<<<< HEAD
-=======
   const history = useHistory();
 
   const [recomendedRecipes, setRecomendedRecipes] = useState([]);
 
->>>>>>> c5bcdf345099cdbfea035045875aa4c44da274e5
   useEffect(() => {
     fetchDetailsById(id);
     fetchRecomendedRecipes(location, setRecomendedRecipes);
@@ -30,10 +27,6 @@ function RecipeDetails() {
   const isInProgress = localStorage.getItem('inProgressRecipes')
     ? JSON.parse(localStorage.getItem('inProgressRecipes'))[screen][id] : false;
 
-<<<<<<< HEAD
-  const magic10 = 10;
-=======
->>>>>>> c5bcdf345099cdbfea035045875aa4c44da274e5
   const magic13 = 13;
   const magic6 = 6;
   return loading ? (
