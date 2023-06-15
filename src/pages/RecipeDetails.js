@@ -3,6 +3,7 @@ import { useParams, useLocation } from 'react-router-dom';
 import DetailsContext from '../context/DetailsContext';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
+import fetchRecomendedRecipes from '../services/fetchRecomendedRecipes';
 
 function RecipeDetails() {
   const { fetchDetailsById, fetchRecipeById, loading } = useContext(DetailsContext);
@@ -12,22 +13,17 @@ function RecipeDetails() {
   const [recomendedRecipes, setRecomendedRecipes] = useState([]);
 
   useEffect(() => {
-    async function fetchRecomendedRecipes() {
-      const screen = !location.includes('meal') ? 'meals' : 'drinks';
-      const URL = screen !== 'drinks' ? 'https://www.themealdb.com/api/json/v1/1' : 'https://www.thecocktaildb.com/api/json/v1/1';
-      const response = await fetch(`${URL}/search.php?s=`);
-      const data3 = await response.json();
-      if (data3[screen] && data3[screen].length > 0) {
-        setRecomendedRecipes(data3[screen]);
-      }
-    }
     fetchDetailsById(id);
-    fetchRecomendedRecipes();
+    fetchRecomendedRecipes(location, setRecomendedRecipes);
   }, []);
 
   const isDoneRecipe = localStorage.getItem('doneRecipes')
     ? JSON.parse(localStorage.getItem('doneRecipes')).some((recipe) => recipe.id === id)
     : false;
+
+  const screen = location.includes('meal') ? 'meals' : 'drinks';
+  const isInProgress = localStorage.getItem('inProgressRecipes')
+    ? JSON.parse(localStorage.getItem('inProgressRecipes'))[screen][id] : false;
 
   const magic13 = 13;
   const magic6 = 6;
@@ -108,7 +104,7 @@ function RecipeDetails() {
             type="button"
             data-testid="start-recipe-btn"
           >
-            Start Recipe
+            {isInProgress ? 'Continue Recipe' : 'Start Recipe'}
           </button>
         )}
       </Footer>
