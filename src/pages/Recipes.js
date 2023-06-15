@@ -15,7 +15,6 @@ function Recipes() {
     setSearchInputText,
     loading,
     listedCategories,
-    // setListedCategories,
     fetchRecipesByCategory,
     setToggleAllClick,
     toggleAllClick,

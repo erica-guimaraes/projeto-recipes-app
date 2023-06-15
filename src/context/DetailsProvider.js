@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {
+  // useEffect,
+  useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import DetailsContext from './DetailsContext';
 
@@ -18,16 +20,15 @@ function DetailsProvider({ children }) {
     if (data === null) {
       return;
     }
-
     setFetchRecipeById(data.meals || data.drinks);
     setLoading(false);
   };
 
-  useEffect(() => {
-    if (globalRecipeId) {
-      fetchDetailsById(globalRecipeId);
-    }
-  }, [globalRecipeId]);
+  // useEffect(() => {
+  //   if (globalRecipeId) {
+  //     fetchDetailsById(globalRecipeId);
+  //   }
+  // }, [globalRecipeId]);
 
   const initialState = useMemo(() => ({
     loading,

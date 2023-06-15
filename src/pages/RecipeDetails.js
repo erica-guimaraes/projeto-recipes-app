@@ -1,19 +1,41 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import DetailsContext from '../context/DetailsContext';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
+import fetchRecomendedRecipes from '../services/fetchRecomendedRecipes';
 
 function RecipeDetails() {
   const { fetchDetailsById, fetchRecipeById, loading } = useContext(DetailsContext);
   const { id } = useParams();
   const location = useLocation().pathname;
+<<<<<<< HEAD
+=======
+  const history = useHistory();
+
+  const [recomendedRecipes, setRecomendedRecipes] = useState([]);
+
+>>>>>>> c5bcdf345099cdbfea035045875aa4c44da274e5
   useEffect(() => {
     fetchDetailsById(id);
-  }, [location]);
+    fetchRecomendedRecipes(location, setRecomendedRecipes);
+  }, []);
 
+  const isDoneRecipe = localStorage.getItem('doneRecipes')
+    ? JSON.parse(localStorage.getItem('doneRecipes')).some((recipe) => recipe.id === id)
+    : false;
+
+  const screen = location.includes('meal') ? 'meals' : 'drinks';
+  const isInProgress = localStorage.getItem('inProgressRecipes')
+    ? JSON.parse(localStorage.getItem('inProgressRecipes'))[screen][id] : false;
+
+<<<<<<< HEAD
   const magic10 = 10;
+=======
+>>>>>>> c5bcdf345099cdbfea035045875aa4c44da274e5
   const magic13 = 13;
+  const magic6 = 6;
   return loading ? (
     <p>Loading...</p>
   ) : (
@@ -33,31 +55,71 @@ function RecipeDetails() {
                || option.strCategory}
            </p>
            <ul>
-             {Object.entries(option).map((entry, indexEntries) => { // entries para pegar o valor sem chamar fetchRecipeById novamente
-               if (
-                 entry[0].startsWith('strIngredient') // keys estavam diferentes, buscando semelhantes
-                   && entry[1] !== null && entry[1] !== '' // removendo ingredientes vazios
-               ) {
-                 const ingredientIndex = indexEntries + 1 - magic10; // gambiarra para pegar o index do ingrediente
-                 return (
-                   <li
-                     key={ entry[1] }
-                     data-testid={ `${ingredientIndex}-ingredient-name-and-measure` }
-                   >
-                     {entry[1]}
-                     {' '}
-                     {option[`strMeasure${entry[0].slice(magic13)}`]}
-                   </li>
-                 );
-               }
-               return null;
-             })}
+             {Object.entries(option).filter((details) => details[0]
+               .includes('strIngredient') && details[1])
+               .map((entry, indexEntries) => (// entries para pegar o valor sem chamar fetchRecipeById novamente
+                 <li
+                   key={ entry[1] }
+                   data-testid={ `${indexEntries}-ingredient-name-and-measure` }
+                 >
+                   {entry[1]}
+                   {' '}
+                   {option[`strMeasure${entry[0].slice(magic13)}`]}
+                 </li>
+               ))}
            </ul>
            <p data-testid="instructions">{option.strInstructions}</p>
-         </div>
+           <iframe
+             title="video"
+             data-testid="video"
+             src={ option.strYoutube }
+           >
+             Vídeo
+           </iframe>
 
+         </div>
        ))}
-      <Footer />
+      <div
+        style={ {
+          display: 'flex',
+          maxWidth: '400px',
+          overflowX: 'scroll',
+        } }
+      >
+        {recomendedRecipes && recomendedRecipes.length > 0
+        && recomendedRecipes.slice(0, magic6).map((recipe, index) => (
+          <div
+            data-testid={ `${index}-recommendation-card` }
+            key={ index }
+            style={ {
+              minWidth: '200px',
+            } }
+          >
+            <img
+              width="80px"
+              src={ recipe.strMealThumb || recipe.strDrinkThumb }
+              alt={ recipe.strMeal || recipe.strDrink }
+            />
+            <p data-testid={ `${index}-recommendation-title` }>
+              {recipe.strMeal || recipe.strDrink}
+            </p>
+          </div>
+        ))}
+      </div>
+      <Footer>
+        {!isDoneRecipe && (
+          <button
+            style={ { position: 'fixed', bottom: '0' } }
+            type="button"
+            data-testid="start-recipe-btn"
+            onClick={ () => {
+              history.push(`${location}/in-progress`);
+            } }
+          >
+            {isInProgress ? 'Continue Recipe' : 'Start Recipe'}
+          </button>
+        )}
+      </Footer>
     </div>
   );
 }

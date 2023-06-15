@@ -23,3 +23,5 @@ describe('Testando o componente "SearchBar"', () => {
     expect(searchButton).toBeInTheDocument();
   });
 });
+
+//
