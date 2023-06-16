@@ -30,13 +30,13 @@ describe('Testando o componente "Header"', () => {
         <App />
       </Router>,
     );
-    const buttonProfile = screen.getByTestId('profile-top-btn');
+    const buttonProfile = screen.getByRole('img', { name: /profile-icon/i });
 
     userEvent.click(buttonProfile);
     expect(history.location.pathname).toBe('/profile');
   });
 
-  it('Verifica se ao clicar no botão de busca pela primeira vez, a barra de busca aparece', () => {
+  it('Verifica se ao clicar no botão de busca pela primeira vez, a barra de busca aparece e clicando novamente, ela desaparece', () => {
     const history = createMemoryHistory();
     history.push('/meals');
     render(
@@ -44,10 +44,30 @@ describe('Testando o componente "Header"', () => {
         <App />
       </Router>,
     );
-    const buttonSearch = screen.getByTestId('search-top-btn');
+    const buttonSearch = screen.getByRole('img', { name: /search-icon/i });
 
     userEvent.click(buttonSearch);
     const input = screen.getByTestId('search-input');
     expect(input).not.toBeDisabled();
+
+    userEvent.click(buttonSearch);
+    expect(input).not.toBeInTheDocument();
+  });
+
+  it('Verifica o funcionamento do input', () => {
+    const history = createMemoryHistory();
+    history.push('/meals');
+    render(
+      <Router history={ history }>
+        <App />
+      </Router>,
+    );
+
+    const buttonSearch = screen.getByRole('img', { name: /search-icon/i });
+
+    userEvent.click(buttonSearch);
+    const searchInput = screen.getByTestId('search-input');
+    userEvent.type(searchInput, 'example');
+    expect(searchInput).toHaveValue('example');
   });
 });
