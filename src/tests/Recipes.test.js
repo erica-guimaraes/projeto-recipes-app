@@ -38,6 +38,39 @@ describe('Testando a página de pricipais Receitas', () => {
       expect(meals2).toBeInTheDocument();
     });
   });
+
+  it('Verifica se ao clicar em um card, é encaminhado para a página específica dos detalhes da receita', async () => {
+    const history = createMemoryHistory();
+    history.push('/meals');
+    render(
+      <Router history={ history }>
+        <DetailsProvider>
+          <Provider>
+            <Recipes />
+          </Provider>
+        </DetailsProvider>
+      </Router>,
+    );
+    const meals0 = screen.getByRole('img', { name: /corba/i });
+    userEvent.click(meals0);
+    await waitFor(() => {
+      expect(history.location.pathname).toBe('/meals/52977');
+    });
+  });
+
+  it('Verifica se ao clicar em um dos botões de filtro por categoria, é encaminhado para a página específica', () => {
+    const history = createMemoryHistory();
+    history.push('/meals');
+    render(
+      <Router history={ history }>
+        <DetailsProvider>
+          <Provider>
+            <Recipes />
+          </Provider>
+        </DetailsProvider>
+      </Router>,
+    );
+  });
 });
 
 describe('Testando a página de principais Bebidas', () => {
@@ -70,5 +103,32 @@ describe('Testando a página de principais Bebidas', () => {
       expect(meals1).toBeInTheDocument();
       expect(meals2).toBeInTheDocument();
     });
+  });
+
+  it('Verifica se ao clicar em um card, é encaminhado para a página específica dos detalhes da receita', async () => {
+    const history = createMemoryHistory();
+    history.push('/meals');
+    render(
+      <Router history={ history }>
+        <DetailsProvider>
+          <Provider>
+            <Recipes />
+          </Provider>
+        </DetailsProvider>
+      </Router>,
+    );
+  });
+  it('Verifica se ao clicar em um dos botões de filtro por categoria, é encaminhado para a página específica', () => {
+    const history = createMemoryHistory();
+    history.push('/meals');
+    render(
+      <Router history={ history }>
+        <DetailsProvider>
+          <Provider>
+            <Recipes />
+          </Provider>
+        </DetailsProvider>
+      </Router>,
+    );
   });
 });
