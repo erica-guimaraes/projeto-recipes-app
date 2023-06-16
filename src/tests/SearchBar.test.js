@@ -5,6 +5,8 @@ import userEvent from '@testing-library/user-event';
 import App from '../App';
 
 describe('Testando o componente "SearchBar"', () => {
+  const nameRadio = screen.getByTestId('name-search-radio');
+
   it('Verifica se é renderizado os elementos corretamente', () => {
     const history = createMemoryHistory();
     history.push('/meals');
@@ -14,7 +16,6 @@ describe('Testando o componente "SearchBar"', () => {
       </Router>,
     );
     const ingredientRadio = screen.getByTestId('ingredient-search-radio');
-    const nameRadio = screen.getByTestId('name-search-radio');
     const firstLetterRadio = screen.getByTestId('first-letter-search-radio');
     const searchButton = screen.getByTestId('exec-search-btn');
 
@@ -33,7 +34,6 @@ describe('Testando o componente "SearchBar"', () => {
       </Router>,
     );
     const ingredientRadio = screen.getByTestId('ingredient-search-radio');
-    const nameRadio = screen.getByTestId('name-search-radio');
     const firstLetterRadio = screen.getByTestId('first-letter-search-radio');
 
     userEvent.type(ingredientRadio, { target: { value: 'Ingredient' } });
@@ -61,7 +61,6 @@ describe('Testando o componente "SearchBar"', () => {
     const searchInput = screen.getByTestId('search-input');
     userEvent.type(searchInput, 'Sushi');
 
-    const nameRadio = screen.getByTestId('name-search-radio');
     userEvent.type(nameRadio, { target: { value: 'Name' } });
 
     const buttonSearch = screen.getByRole('button', { name: /buscar/i });
